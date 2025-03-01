@@ -1,6 +1,16 @@
-# BLOOD DONATION AND EMERGENCY HELP [MOBILE APP]
+# RaktVeer
 
-## Problem Statement ID: PS 7
+## Team Name
+3beans4coffee
 
-## Overview
-The **Blood Donation and Emergency Help** mobile app is designed to connect blood donors with those in urgent need. The application allows users to find nearby blood banks and donors, request emergency blood, and contribute to life-saving efforts.
+## Problem Statement
+PS 07: BLOOD DONATION & EMERGENCY HELP
+
+## Team Members
+- Gaurav Dubey
+- Ganesh Mishra
+- Himanshu Mishra
+- Harsh Goilkar
+
+## Project Description
+RaktVeer is a project aimed at creating a seamless connection between blood donors and recipients. The platform will facilitate easy and quick access to blood donations, ensuring that those in need can find donors efficiently.
