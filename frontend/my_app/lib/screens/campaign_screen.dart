@@ -37,7 +37,7 @@ class _CampaignsScreenContent extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'CAMPAIGNS',
+          'HOSPITALS',
           style: TextStyle(
             color: theme.textTheme.bodyLarge?.color,
             fontSize: screenWidth * 0.045, // Responsive font size

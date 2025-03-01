@@ -34,7 +34,9 @@ class ProfileScreen extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.notifications_outlined),
-                onPressed: () {},
+                onPressed: () {
+                    Navigator.of(context).pushNamed('/notification');
+                },
               ),
               Positioned(
                 top: 12,

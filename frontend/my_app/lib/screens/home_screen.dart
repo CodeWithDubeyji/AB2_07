@@ -132,7 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.notifications_outlined),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/notification');
+                        },
                       ),
                       Positioned(
                         top: 12,
@@ -161,15 +163,82 @@ class _HomeScreenState extends State<HomeScreen> {
     final size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        height: size.height * 0.07,
-        width: size.width * 0.94,
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Center(
-          child: Text('Emergency SOS', style: theme.textTheme.titleLarge),
+      child: GestureDetector(
+        onTap: () {
+          String selectedBloodGroup = 'B+';
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('Emergency SOS', style: theme.textTheme.titleLarge),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Are you sure you want to send an emergency SOS?'),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Text('Select your blood group: ',
+                          style: theme.textTheme.bodyLarge),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      DropdownButton<String>(
+                        value: selectedBloodGroup,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedBloodGroup = newValue!;
+                          });
+                        },
+                        items: <String>[
+                          'A+',
+                          'A-',
+                          'B+',
+                          'B-',
+                          'AB+',
+                          'AB-',
+                          'O+',
+                          'O-'
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('CANCEL',
+                      style: TextStyle(color: AppTheme.primaryColor)),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/sos');
+                  },
+                  child: Text('SEND SOS',
+                      style: TextStyle(color: AppTheme.primaryColor)),
+                ),
+              ],
+            ),
+          );
+        },
+        child: Container(
+          height: size.height * 0.07,
+          width: size.width * 0.94,
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Center(
+            child: Text('Emergency SOS', style: theme.textTheme.titleLarge),
+          ),
         ),
       ),
     );
@@ -321,8 +390,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           _buildActionButton(
             context,
-            icon: Icons.campaign_outlined,
-            label: 'CAMPAIGNS',
+            icon: Icons.local_hospital_outlined,
+            label: 'HOSPITALS',
             onTap: () {
               Navigator.pushNamed(context, '/campaign');
             },
@@ -337,17 +406,64 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             width: size.width * 0.28,
           ),
-          _buildActionButton(
+            _buildActionButton(
             context,
             icon: Icons.person_search_outlined,
             label: 'FIND DONOR',
-            onTap: () {},
+            onTap: () {
+              String selectedBloodGroup = 'B+';
+              showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text('Find Donor', style: Theme.of(context).textTheme.titleLarge),
+                content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Select your blood group:', style: Theme.of(context).textTheme.bodyLarge),
+                  const SizedBox(height: 16),
+                  DropdownButton<String>(
+                  value: selectedBloodGroup,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                    selectedBloodGroup = newValue!;
+                    });
+                  },
+                  items: <String>[
+                    'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                    );
+                  }).toList(),
+                  ),
+                ],
+                ),
+                actions: [
+                TextButton(
+                  onPressed: () {
+                  Navigator.pop(context);
+                  },
+                  child: Text('CANCEL', style: TextStyle(color: AppTheme.primaryColor)),
+                ),
+                TextButton(
+                  onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/donorlist');
+                  // Implement search functionality here
+                  },
+                  child: Text('SEARCH', style: TextStyle(color: AppTheme.primaryColor)),
+                ),
+                ],
+              ),
+              );
+            },
             width: size.width * 0.28,
+            ),
+          ],
           ),
-        ],
-      ),
-    );
-  }
+        );
+        }
 
   Widget _buildActionButton(
     BuildContext context, {
