@@ -45,40 +45,43 @@ npm run dev
   flutter build apk
   ```
 
-## Usage
-1. Start the server with npm start or node index.js in the Backend folder.
-2. Access the endpoints using the documented routes (e.g., /request, /addcampaign, etc.).
+## Preview of the Provided Solution
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+  <div style="text-align: center;">
+    <img src="./frontend/my_app/assests/images/Register.jpg" style="width:100%;" />
+    <p>User Registration screen</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./frontend/my_app/assests/images/Login.jpg" style="width:100%;" />
+    <p>User Login screen</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./frontend/my_app/assests/images/Home.jpg" style="width:100%;" />
+    <p>Home screen</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./frontend/my_app/assests/images/Hospitals.jpg" style="width:100%;" />
+    <p>List of Hospitals and their blood pool</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./frontend/my_app/assests/images/Donate.jpg" style="width:100%;" />
+    <p>Donate at a certain nearby campaign</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./frontend/my_app/assests/images/FindDonor.jpg" style="width:100%;" />
+    <p>find donor nearby for a specific blood group</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./frontend/my_app/assests/images/SOSalert.jpg" style="width:100%;" />
+    <p>request with highest urgency for a specific blood type nearby</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./frontend/my_app/assests/images/Notification.jpg" style="width:100%;" />
+    <p>Users is notified about the blood requests from nearby users</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./frontend/my_app/assests/images/UserProfile.jpg" style="width:100%;" />
+    <p>Profile of a logged in user</p>
+  </div>
+</div>
 
-## Detailed Flow
-1. User signs up and provides blood type and location.
-2. Users can request blood, donate, or organize/participate in a campaign.
-3. The system checks inventory/campaigns in nearby locations using geospatial queries and sorts by distance.
-4. Blood banks and campaigns update their status in real-time when new requests or donations are added.
-5. The home screen loads key sections (carousel, donation requests).  
-6. Navigation is managed by a bottom tab in HomeProvider.  
-7. Donate form validates time/date before submitting.  
-8. Campaigns screen lists all campaigns, allows toggling participation.
-
-## Folder Structure
-- Backend
-  - src
-    - routes
-    - models
-    - config
-  - package.json
-- frontend/
-  - my_app/
-    - lib/
-      - provider/
-        - home_screen_provider.dart
-        - notification_provider.dart
-      - screens/
-        - home_screen.dart
-        - donorlist.dart
-        - donate_form.dart
-        - campaign_screen.dart
-
-## Additional Information
-• Keep your SDK updated to avoid unexpected compilation issues.  
-• Refer to the code comments for provider usage and UI structure.  
-• Use "flutter doctor" to verify your environment setup.
