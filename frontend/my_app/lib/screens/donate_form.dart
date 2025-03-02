@@ -36,9 +36,8 @@ class _DonateScreenContent extends StatelessWidget {
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               homeProvider.setSelectedTabIndex(0);
-              
-              Navigator.of(context).pop();
 
+              Navigator.of(context).pop();
             }),
       ),
       body: SafeArea(
@@ -167,11 +166,12 @@ class _DonateScreenContent extends StatelessWidget {
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    'Downtown Center',
-                                    'North Branch',
-                                    'South Hub',
-                                    'East Station',
-                                    'West Facility',
+                                    'Andheri',
+                                    'Bandra',
+                                    'Bhandup',
+                                    'Borivali',
+                                    'Vasai',
+                                    
                                   ]
                                       .map((location) => ListTile(
                                             title: Text(location),
@@ -221,6 +221,7 @@ class _DonateScreenContent extends StatelessWidget {
                                   content:
                                       Text('Donation scheduled successfully!')),
                             );
+                            Navigator.pop(context);
                             // Navigate back or to confirmation screen
                             // Navigator.of(context).pop();
                           }
@@ -309,13 +310,16 @@ class _DonateScreenContent extends StatelessWidget {
           isExpanded: true,
           hint: Text(
             'List of available campaigns on this date',
-            style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+            style: TextStyle(color: Colors.black, fontSize: 16),
           ),
           value: provider.selectedCampaign,
           items: provider.availableCampaigns.map((String campaign) {
             return DropdownMenuItem<String>(
               value: campaign,
-              child: Text(campaign),
+              child: Text(
+                campaign,
+                style: TextStyle(color: Colors.black),
+              ),
             );
           }).toList(),
           onChanged: provider.selectedTime != null

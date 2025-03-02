@@ -17,7 +17,13 @@ class DonateProvider extends ChangeNotifier {
   String? _selectedLocation;
 
   String? _selectedCampaign;
-  List<String> availableCampaigns = ["abara", "bbara", "cbara", "dbara", "ebara", "fbara", "gbara", "hbara", "ibara", "jbara", "kbara", "lbara", "mbara", "nbara", "obara", "pbara", "qbara", "rbara", "sbara", "tbara", "ubara", "vbara", "wbara", "xbara", "ybara", "zbara"];
+  List<String> availableCampaigns = [
+    "NSS Blood Donation Camp",
+    "Red Cross Blood Drive",
+    "Community Blood Donation Event",
+    "Hospital Blood Donation Campaign",
+    "University Blood Donation Drive"
+  ];
 
   String? get selectedCampaign => _selectedCampaign;
 

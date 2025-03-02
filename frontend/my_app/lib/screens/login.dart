@@ -159,9 +159,8 @@ class LoginScreen extends StatelessWidget {
                       : () async {
                           if (await provider.login()) {
                             // Navigate to home screen on success
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Login successful!')),
-                            );
+                            
+                            Navigator.pushNamed(context, '/home');
                           }
                         },
                   style: ElevatedButton.styleFrom(

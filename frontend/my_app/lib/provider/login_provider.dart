@@ -87,14 +87,20 @@ class LoginProvider extends ChangeNotifier {
       _generalError = null;
       notifyListeners();
       
-      // Implement actual login logic here
-      // This would typically involve an API call
+      // Mock email and password for testing
+      const mockEmail = "test@example.com";
+      const mockPassword = "password123";
       
-      // For now, just simulate a network delay
+      // Simulate a network delay
       await Future.delayed(const Duration(seconds: 1));
       
-      // Simulate success (in a real app, this would be based on API response)
-      return true;
+      // Check if the provided email and password match the mock credentials
+      if (_email == mockEmail && _password == mockPassword) {
+        return true;
+      } else {
+        _generalError = "Invalid email or password";
+        return false;
+      }
     } catch (e) {
       _generalError = "Failed to login: ${e.toString()}";
       return false;
@@ -103,7 +109,6 @@ class LoginProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  
   Future<bool> loginWithSocialMedia(AuthMethod method) async {
     try {
       _isLoading = true;

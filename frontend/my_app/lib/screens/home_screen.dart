@@ -692,7 +692,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'INVITE YOUR FRIENDS OR FAMILY MEMBERS TO DONATE A BLOOD',
+                      'INVITE YOUR FRIENDS OR FAMILY MEMBERS TO DONATE BLOOD',
                       style: theme.textTheme.bodySmall,
                     ),
                   ],
