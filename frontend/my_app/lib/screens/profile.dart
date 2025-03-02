@@ -244,7 +244,7 @@ class ProfileScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Text(
-        'APP VERSION 4.5.42015',
+        'APP VERSION 1.0.0.0',
         style: theme.textTheme.bodySmall?.copyWith(
           color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
         ),

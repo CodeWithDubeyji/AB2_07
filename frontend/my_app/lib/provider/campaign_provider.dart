@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Campaign {
   final String id;
@@ -18,6 +20,32 @@ class Campaign {
 
 // Campaign Provider for State Management
 class CampaignsProvider extends ChangeNotifier {
+  final url = Uri.parse('http://10.0.2.2:5000/api/requests/active-requests');
+
+  void toggleJoinCampaign(String campaignId) async {
+    final index = _campaigns.indexWhere((campaign) => campaign.id == campaignId);
+    if (index != -1) {
+      _campaigns[index].isUserJoined = !_campaigns[index].isUserJoined;
+      notifyListeners();
+      //await postData(_campaigns[index]);
+    }
+  }
+
+  Future<void> getData() async {
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        print(data);
+        notifyListeners();
+      } else {
+        throw Exception('Failed to load campaigns' + response.statusCode.toString());
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   final List<Campaign> _campaigns = [
     Campaign(
       id: '1',
@@ -35,34 +63,27 @@ class CampaignsProvider extends ChangeNotifier {
       id: '3',
       date: 'DECEMBER, 29 2022',
       status: 'UPCOMING',
-      description: 'INVITE YOUR FRIENDS AND COLLEGUES FOR NEW BLOOD DONATION CAMPAIGN.',
+      description: 'INVITE YOUR FRIENDS AND COLLEAGUES FOR NEW BLOOD DONATION CAMPAIGN.',
     ),
     Campaign(
       id: '4',
       date: 'JANUARY, 10 2022',
       status: 'UPCOMING',
-      description: 'INVITE YOUR FRIENDS AND COLLEGUES FOR NEW BLOOD DONATION CAMPAIGN.',
+      description: 'INVITE YOUR FRIENDS AND COLLEAGUES FOR NEW BLOOD DONATION CAMPAIGN.',
     ),
   ];
 
   int get activeCampaignsCount => _campaigns.length;
   List<Campaign> get campaigns => _campaigns;
+  bool get isUserJoined => _campaigns.any((campaign) => campaign.isUserJoined);
 
-  // Toggle user participation in campaign
-  void toggleJoinCampaign(String campaignId) {
-    final index = _campaigns.indexWhere((campaign) => campaign.id == campaignId);
-    if (index != -1) {
-      _campaigns[index].isUserJoined = !_campaigns[index].isUserJoined;
-      notifyListeners();
-    }
-  }
+  List<Campaign> get joinedCampaigns => _campaigns.where((campaign) => campaign.isUserJoined).toList();
+  List<Campaign> get notJoinedCampaigns => _campaigns.where((campaign) => !campaign.isUserJoined).toList();
 
   // View campaign details (navigation would be implemented in UI)
   void viewCampaignDetails(String campaignId) {
     // This would typically navigate to a details screen
     // For now, just a placeholder method
-    print('Viewing details for campaign $campaignId');
+    debugPrint('Viewing details for campaign $campaignId');
   }
 }
-
-// Main Campaigns Screen

@@ -1,20 +1,92 @@
 const express = require("express");
 const User = require("../models/UserModel");
 const router = express.Router();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const authenticate = require("../middelware/AuthMiddleware");
 
 // Register a new user
-router.post("/register", async (req, res) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    res.status(201).json(user);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+router.post('/register' , async (request, response)=>{
+    
+    try {
+         
+        const {name ,   email,phone ,location, password  } = request.body;
+       
+
+        const existingUser = await User.findOne({name});
+
+        if(existingUser){
+            return response.status(400).json({message:"Username already exists"});
+        }
+
+        const existingEmail = await User.findOne({email});
+
+        if(existingEmail){
+            return response.status(400).json({message:"Email already exists"});
+        }
+
+      
+
+        const hashedPassword = await bcrypt.hash(password ,10);
+
+        const newUser = {
+            name:name,
+            phone:phone,
+            location:location,
+            email:email,
+            password:hashedPassword,
+            
+        };
+
+        const user = new User(newUser);
+        await user.save();
+        response.status(200).json({message:"User registered successfully"});
+    }
+    catch(error){
+
+        response.status(500).json({message:"Something went wrong",error:error.message});
+
+    }
+});
+
+router.post('/login' , async (request , response)=>{
+    try{
+
+        const {name , password} = request.body; 
+     
+        //saving user sent password and username in the variables 
+
+        const user = await User.findOne({name});
+       
+        //now we'll find whether the user of  that particular username exists in 
+        //User collection or not using findOne function and passing the username in it
+
+
+        if(!user){
+            return response.status(400).json({message:"User does not exist"});//if that particulat username is  not present then we'll print this
+        }
+
+        const isMatched = await bcrypt.compare(password, user.password);// else compare the password using bcrypt.compare
+
+        if(!isMatched){
+            return response.status(400).json({message:"invalid password"});
+        }
+        
+        const token = jwt.sign({id:user._id,username:user.username,type:user.type}, "alphabyte",{expiresIn:'1hr'});
+
+        response.status(200).json({message:'Token generated successfully',token:token});
+
+        
+    }
+    catch(error){
+        response.status(500).json({message:"Something went wrong",error:error.message});
+    }
+
+
 });
 
 // Get nearby donors
-router.get("/nearby-donors", async (req, res) => {
+router.get("/nearby-donors",authenticate, async (req, res) => {
     const { longitude, latitude, bloodType } = req.query;
     console.log("Query Params:", longitude, latitude, bloodType); // Debugging
   
