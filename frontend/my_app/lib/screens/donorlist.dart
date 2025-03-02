@@ -97,24 +97,31 @@ class DonorTile extends StatelessWidget {
     final textTheme = theme.textTheme;
 
     return Container(
-      padding: EdgeInsets.symmetric(
+      margin: EdgeInsets.symmetric(
         horizontal: 16.0,
         vertical: 8.0,
       ),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 16.0,
+      ),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.withOpacity(0.2),
-            width: 1,
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8.0,
+            offset: Offset(0, 4),
           ),
-        ),
+        ],
       ),
       child: Row(
         children: [
           Expanded(
             child: Text(
               donor.name,
-              style: textTheme.bodyLarge
+              style: textTheme.bodyLarge?.copyWith(fontSize: 18.0),
             ),
           ),
           Row(

@@ -3,7 +3,7 @@ import 'package:my_app/provider/campaign_provider.dart';
 import 'package:provider/provider.dart';
 
 class CampaignsScreen extends StatelessWidget {
-  const CampaignsScreen({Key? key}) : super(key: key);
+  const CampaignsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,14 +55,15 @@ class _CampaignsScreenContent extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(paddingValue),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Active campaigns count
-              RichText(
-                text: TextSpan(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(paddingValue),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                // Active campaigns count
+                RichText(
+                  text: TextSpan(
                   style: TextStyle(
                     fontSize: screenWidth * 0.04,
                     color: Colors.black54,
@@ -70,34 +71,63 @@ class _CampaignsScreenContent extends StatelessWidget {
                   children: [
                     TextSpan(text: 'WE HAVE TOTAL ', style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)), 
                     TextSpan(
-                      text: '0${provider.activeCampaignsCount} ACTIVE CAMPAIGNS',
-                      style: TextStyle(
-                        color: theme.primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    text: '0${provider.activeCampaignsCount} ACTIVE CAMPAIGNS',
+                    style: TextStyle(
+                      color: theme.primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                     ),
                   ],
+                  ),
                 ),
-              ),
-              
-              SizedBox(height: screenHeight * 0.02), // 2% of screen height
-              
-              // Campaign list
-              Expanded(
-                child: ListView.builder(
+                
+                SizedBox(height: screenHeight * 0.02), // 2% of screen height
+                
+                // Campaign list
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
                   itemCount: provider.campaigns.length,
                   itemBuilder: (context, index) {
-                    final campaign = provider.campaigns[index];
-                    return _CampaignCard(
-                      campaign: campaign,
-                      theme: theme,
-                      screenHeight: screenHeight,
-                      screenWidth: screenWidth,
-                    );
+                  final campaign = provider.campaigns[index];
+                  return _CampaignCard(
+                    campaign: campaign,
+                    theme: theme,
+                    screenHeight: screenHeight,
+                    screenWidth: screenWidth,
+                  );
                   },
                 ),
-              ),
-            ],
+                // Update button
+                Consumer<CampaignsProvider>(
+                  builder: (context, provider, child) {
+                  return ElevatedButton(
+                    onPressed:  () async {
+                    try {
+                      await provider.getData();
+                    } catch (e) {
+                      // Handle the exception
+                      print('Failed to load campaigns: $e');
+                    }
+
+                    // Handle update action
+                    },
+                    style: ElevatedButton.styleFrom(
+                    backgroundColor: provider.isUserJoined ? theme.primaryColor : Colors.grey,
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                    textStyle: TextStyle(
+                      fontSize: screenWidth * 0.04,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                    child: Center(
+                    child: Text('UPDATE'),
+                    ),
+                  );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -117,7 +147,7 @@ class _CampaignCard extends StatelessWidget {
     required this.screenHeight,
     required this.screenWidth,
   });
-
+    // final double cardPadding = screenWidth * 0.03; // 3% of screen width
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<CampaignsProvider>(context);
@@ -237,6 +267,3 @@ class _CampaignCard extends StatelessWidget {
     );
   }
 }
-
-
-
