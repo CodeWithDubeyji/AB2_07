@@ -1,9 +1,12 @@
 const express = require("express");
 const BloodRequest = require("../models/BloodRequest");
 const router = express.Router();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const authenticate = require('../middelware/AuthMiddleware');
 
 // Create a new blood request
-router.post("/request", async (req, res) => {
+router.post("/request",authenticate, async (req, res) => {
   try {
     const request = new BloodRequest(req.body);
     await request.save();
@@ -14,7 +17,7 @@ router.post("/request", async (req, res) => {
 });
 
 // Get active blood requests
-router.get("/active-requests", async (req, res) => {
+router.get("/active-requests",authenticate, async (req, res) => {
   try {
     const requests = await BloodRequest.find({ status: "Pending" }).populate("requesterId");
     res.json(requests);
