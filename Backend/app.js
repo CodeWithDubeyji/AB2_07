@@ -12,6 +12,7 @@ app.use(cors());
 const bloodInventoryRoutes = require("./src/routes/bloodInventory");
 
 app.use("/api/bloodInventory", bloodInventoryRoutes);
+app.use("/api/campaigns", require("./src/routes/campaignRoutes"));
 
 app.get("/", (req, res) => {
     res.send("Blood Request System API Running...");
