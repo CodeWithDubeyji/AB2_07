@@ -3,7 +3,7 @@ dotenv.config();
 const fs = require('fs');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-const genAI = new GoogleGenerativeAI(process.env.VITE_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.VITE_API_KEY); 
 const uploadImage = async (req, res) => {
   try {
     const imagePath = req.file.path;
@@ -23,7 +23,7 @@ const uploadImage = async (req, res) => {
       - No long paragraphs, keep it short and **informative**.
     `;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const response = await model.generateContent([
       { text: prePrompt },

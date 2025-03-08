@@ -1,8 +1,7 @@
-const app = require('./app'); // Import the Express app
+const app = require('./app');
 const http = require('http');
 const connectDB = require('./src/config/db');
 
-// Connect to the database
 connectDB();
 
 const PORT = process.env.PORT || 5000;

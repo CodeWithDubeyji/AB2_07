@@ -11,12 +11,8 @@ const requestHistoryRoutes = require('./src/routes/requestHistoryRoutes');
 dotenv.config();
 
 const app = express();
-
-// Middleware
 app.use(express.json());
 app.use(cors());
-
-// Routes
 app.use('/api/bloodInventory', bloodInventoryRoutes);
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/users', userRoutes);

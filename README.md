@@ -52,32 +52,32 @@ npm run dev
     <p>User Registration screen</p>
   </div>
   <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/Login.jpg" style="width:100%;" />
-    <p>User Login screen</p>
+    <img src="./frontend/my_app/assests/images/SOS.png" style="width:100%;" />
+    <p>SOS and emergency helpline numbers with first responders number</p>
   </div>
   <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/Home.jpg" style="width:100%;" />
+    <img src="./frontend/my_app/assests/images/AboutACampaign.png" style="width:100%;" />
     <p>Home screen</p>
   </div>
   <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/Hospitals.jpg" style="width:100%;" />
+    <img src="./frontend/my_app/assests/images/BloodBanks.png" style="width:100%;" />
     <p>List of Hospitals and their blood pool</p>
   </div>
   <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/Donate.jpg" style="width:100%;" />
-    <p>Donate at a certain nearby campaign</p>
+    <img src="./frontend/my_app/assests/images/NearbyDonors.png" style="width:100%;" />
+    <p>Get nearby donors and blood banks</p>
   </div>
   <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/FindDonor.jpg" style="width:100%;" />
+    <img src="./frontend/my_app/assests/images/FindDonor.png" style="width:100%;" />
     <p>find donor nearby for a specific blood group</p>
   </div>
   <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/SOSalert.jpg" style="width:100%;" />
-    <p>request with highest urgency for a specific blood type nearby</p>
+    <img src="./frontend/my_app/assests/images/Notification.png" style="width:100%;" />
+    <p>User get notified based on prioritization algorithm</p>
   </div>
   <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/Notification.jpg" style="width:100%;" />
-    <p>Users is notified about the blood requests from nearby users</p>
+    <img src="./frontend/my_app/assests/images/RequestHistory.png" style="width:100%;" />
+    <p>Request history of a user</p>
   </div>
   <div style="text-align: center;">
     <img src="./frontend/my_app/assests/images/UserProfile.png" style="width:100%;" />
