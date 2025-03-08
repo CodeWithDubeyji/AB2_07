@@ -88,7 +88,7 @@ router.post('/login' , async (request , response)=>{
 });
 
 // Get nearby donors
-router.get("/nearby-donors", async (req, res) => {
+router.get("/nearby-donors",authenticate, async (req, res) => {
   try {
     const { longitude, latitude, bloodType } = req.query;
 
