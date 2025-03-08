@@ -21,6 +21,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/live-donor-tracking', liveDonorTrackingRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/request-history', require('./src/routes/requestHistoryRoutes'));
 
 app.get('/', (req, res) => {
   res.send('Blood Request System API Running...');
