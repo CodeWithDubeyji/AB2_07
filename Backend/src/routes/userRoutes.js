@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const authenticate = require("../middelware/AuthMiddleware");
 const Notification = require("../models/NotificationModel");
+const BloodRequest = require("../models/BloodRequest");
 
 // Register a new user
 router.post('/register' , async (request, response)=>{
@@ -138,6 +139,38 @@ router.get("/nearby-donors", async (req, res) => {
     }
   });
   
+  router.put("/notifications/:id", authenticate, async (req, res) => {
+    try {
+      const notification = await Notification.findById(req.params.id);
+      const request = await BloodRequest.findById(notification.requestId);
+      request.assignedDonorId = req.user._id;
+      request.status = "Accepted";
+      if (!request) {
+        return res.status(404).json({ error: "Blood request not found" });
+      }
+      
+      notification.read = true;
+      await notification.save();
+      await request.save();
+      res.status(200).json({ message: "Request accepted and notification updated", notification, request });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }  } );
+
+    router.delete("/notifications/:id", authenticate, async (req, res) => {
+      try {
+        const notification = await Notification.findByIdAndDelete(req.params.id);
+        
+        if (!notification) {
+          return res.status(404).json({ error: "Notification not found" });
+        }
+    
+        res.status(200).json({ message: "Notification deleted successfully", notification });
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+    
 
 router.get("/users", async (req, res) => {
   try {
