@@ -4,7 +4,7 @@ class AppTheme {
   // Light Theme Colors
   static const Color primaryColor = Color.fromRGBO(255, 0, 82, 1);
   static const Color backgroundColor = Color.fromRGBO(255, 255, 255, 1);
-  static const Color cardColor = Color.fromRGBO(82, 79, 79, 1);
+  static const Color cardColor = Color.fromRGBO(243, 241, 241, 1);
   static const Color textDarkColor = Color.fromRGBO(50, 50, 50, 1);
   static const Color textLightColor = Color.fromRGBO(150, 150, 150, 1);
   static const Color iconColor = Color.fromRGBO(100, 100, 100, 1);

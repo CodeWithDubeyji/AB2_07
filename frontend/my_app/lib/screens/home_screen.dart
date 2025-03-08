@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/provider/blood_donation_provider.dart';
 import 'package:my_app/provider/home_screen_provider.dart';
 import 'package:my_app/theme/theme.dart';
 import 'package:provider/provider.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -42,7 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? _buildErrorWidget(provider.errorMessage!)
                 : _buildMainContent(context, provider, size, theme),
       ),
-      bottomNavigationBar: _buildBottomNavBar(context, provider),
     );
   }
 
@@ -165,74 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: GestureDetector(
         onTap: () {
-          String selectedBloodGroup = 'B+';
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text('Emergency SOS', style: theme.textTheme.titleLarge),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Are you sure you want to send an emergency SOS?'),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Text('Select your blood group: ',
-                          style: theme.textTheme.bodyLarge),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      DropdownButton<String>(
-                        value: selectedBloodGroup,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedBloodGroup = newValue!;
-                          });
-                        },
-                        items: <String>[
-                          'A+',
-                          'A-',
-                          'B+',
-                          'B-',
-                          'AB+',
-                          'AB-',
-                          'O+',
-                          'O-'
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('CANCEL',
-                      style: TextStyle(color: AppTheme.primaryColor)),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('SOS sent successfully', style: TextStyle(color: Colors.white),),
-                        backgroundColor: theme.colorScheme.onPrimary,
-                      ));
-                  },
-                  child: Text('SEND SOS',
-                      style: TextStyle(color: AppTheme.primaryColor)),
-                ),
-              ],
-            ),
-          );
+          Navigator.pushNamed(context, '/sos');
         },
         child: Container(
           height: size.height * 0.07,
@@ -415,64 +349,9 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             icon: Icons.person_search_outlined,
             label: 'FIND DONOR',
-            onTap: () {
-              String selectedBloodGroup = 'B+';
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('Find Donor',
-                      style: Theme.of(context).textTheme.titleLarge),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Select your blood group:',
-                          style: Theme.of(context).textTheme.bodyLarge),
-                      const SizedBox(height: 16),
-                      DropdownButton<String>(
-                        value: selectedBloodGroup,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedBloodGroup = newValue!;
-                          });
-                        },
-                        items: <String>[
-                          'A+',
-                          'A-',
-                          'B+',
-                          'B-',
-                          'AB+',
-                          'AB-',
-                          'O+',
-                          'O-'
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('CANCEL',
-                          style: TextStyle(color: AppTheme.primaryColor)),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pushNamed(context, '/donorlist');
-                        // Implement search functionality here
-                      },
-                      child: Text('SEARCH',
-                          style: TextStyle(color: AppTheme.primaryColor)),
-                    ),
-                  ],
-                ),
-              );
+            onTap: ()  {
+              Navigator.pushNamed(context, '/donorlist');
+              
             },
             width: size.width * 0.28,
           ),
@@ -704,77 +583,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  Widget _buildBottomNavBar(BuildContext context, HomeProvider provider) {
-    final theme = Theme.of(context);
-
-    return Container(
-      height: 60,
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          // Home icon
-          IconButton(
-            icon: Icon(
-              Icons.home_outlined,
-              color: provider.selectedTabIndex == 0
-                  ? AppTheme.primaryColor
-                  : theme.textTheme.bodySmall?.color,
-              size: 26,
-            ),
-            onPressed: () => provider.setSelectedTabIndex(0),
-          ),
-
-          // Center blood drop button
-          Container(
-            width: 56,
-            height: 56,
-            decoration: const BoxDecoration(
-              color: Color(0xFF333333),
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-                icon: const Icon(
-                  Icons.water_drop_outlined,
-                  color: Colors.white,
-                  size: 28,
-                ),
-                onPressed: () {
-                  provider.setSelectedTabIndex(1);
-                  Navigator.pushNamed(context, '/donate');
-                }),
-          ),
-
-          // Profile icon
-          IconButton(
-            icon: Icon(
-              Icons.person_outline,
-              color: provider.selectedTabIndex == 2
-                  ? AppTheme.primaryColor
-                  : theme.textTheme.bodySmall?.color,
-              size: 26,
-            ),
-            onPressed: () {
-              provider.setSelectedTabIndex(2);
-              Navigator.pushNamed(context, '/profile');
-            },
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 // Custom painter for blood bag icon
@@ -819,3 +627,5 @@ class BloodBagPainter extends CustomPainter {
     return false;
   }
 }
+
+  
