@@ -177,20 +177,67 @@ class BloodBankDetailScreen extends StatelessWidget {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1.5,
-                        crossAxisSpacing: size.width * 0.03,
-                        mainAxisSpacing: size.width * 0.03,
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.5,
+                      crossAxisSpacing: size.width * 0.03,
+                      mainAxisSpacing: size.width * 0.03,
                       ),
                       itemCount: bloodBank.bloodInventory.length,
                       itemBuilder: (context, index) {
-                        final item = bloodBank.bloodInventory[index];
-                        return _buildBloodTypeCard(
-                          context,
-                          item,
-                          size,
-                          theme,
+                      final item = bloodBank.bloodInventory[index];
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                        bool isSelected = false;
+                        return GestureDetector(
+                          onTap: () {
+                          setState(() {
+                            isSelected = !isSelected;
+                          });
+                          },
+                          child: Card(
+                          color: isSelected ? Colors.red : Colors.white,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(size.width * 0.03),
+                            child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                              children: [
+                                Icon(
+                                Icons.water_drop,
+                                color: item.typeColor,
+                                size: size.width * 0.06,
+                                ),
+                                SizedBox(width: size.width * 0.01),
+                                Text(
+                                item.type,
+                                style: theme.textTheme.titleMedium,
+                                ),
+                              ],
+                              ),
+                              SizedBox(height: size.height * 0.01),
+                              Text(
+                              '${item.units} units',
+                              style: theme.textTheme.bodyLarge,
+                              ),
+                              Text(
+                              item.statusText,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: item.statusColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              ),
+                            ],
+                            ),
+                          ),
+                          ),
                         );
+                        },
+                      );
                       },
                     ),
                     
@@ -201,6 +248,11 @@ class BloodBankDetailScreen extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
+                          SnackBar snackBar = SnackBar(
+                            content: Text('Donation request sent!'),
+                            backgroundColor: Colors.green,
+                          );
+                          Navigator.pushNamed(context, '/navbar');
                           // Request donation action
                         },
                         style: ElevatedButton.styleFrom(

@@ -3,19 +3,23 @@ import 'package:my_app/provider/blood_donation_provider.dart';
 import 'package:my_app/provider/blood_inventory_provider.dart';
 import 'package:my_app/provider/donor_provider.dart';
 import 'package:my_app/provider/emergency_provider.dart';
+import 'package:my_app/provider/find_donor_step_dialog.dart';
 import 'package:my_app/provider/find_donors_provider.dart';
 import 'package:my_app/provider/home_screen_provider.dart';
 import 'package:my_app/provider/login_provider.dart';
 import 'package:my_app/provider/nav_bar_provider.dart';
 import 'package:my_app/provider/notification_provider.dart';
 import 'package:my_app/provider/register_provider.dart';
+import 'package:my_app/screens/blood_bank_details_screen.dart';
 import 'package:my_app/screens/bloodbank_list.dart';
 import 'package:my_app/screens/bottom_sheet_blood_request.dart' as bottomSheet;
+import 'package:my_app/screens/campaign_details.dart';
 import 'package:my_app/screens/campaign_screen.dart';
 import 'package:my_app/screens/chatbot.dart';
 import 'package:my_app/screens/donate_form.dart';
 import 'package:my_app/screens/donor_profile.dart';
 import 'package:my_app/screens/donorlist.dart';
+import 'package:my_app/screens/finddonor_popup.dart';
 import 'package:my_app/screens/home_screen.dart';
 import 'package:my_app/screens/login.dart';
 import 'package:my_app/screens/navbar.dart';
@@ -38,9 +42,13 @@ void main() {
       ChangeNotifierProvider(create: (_) => RegistrationProvider()),
       ChangeNotifierProvider(create: (_) => BottomNavProvider()),
       ChangeNotifierProvider(create: (_) => BloodDonationProvider()),
-      ChangeNotifierProvider(create: (_) => FindDonorsProvider()),
+      //ChangeNotifierProvider(create: (_) => FindDonorsProvider()),
       ChangeNotifierProvider(create: (_) => EmergencyProvider()),
       ChangeNotifierProvider(create: (_) => BloodBankProvider()),
+      ChangeNotifierProvider(create: (_) => DonorDataProvider()),
+      ChangeNotifierProvider(create: (_) => DonorProvider()),
+      ChangeNotifierProvider(create: (_) => HospitalProvider()),
+
 
     ], child: MyApp()),
   );
@@ -58,22 +66,27 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             routes: {
               '/profile': (context) => ProfileScreen(),
-              //'/home': (context) => HomeScreen(),
+              '/home': (context) => HomeScreen(),
               '/donate': (context) => DonateScreen(),
               '/campaign': (context) => CampaignsScreen(),
               '/notification': (context) => NotificationsScreen(),
-              '/donorlist': (context) => FindDonorsContent(),
+              '/donorlist': (context) => BloodDonorSearchScreen(),
               '/register': (context) => RegistrationScreen(),
               '/login': (context) => LoginScreen(),
               '/navbar': (context) => BottomNavBar(),
               '/sos': (context) => EmergencyHelpScreen(),
+              '/bloodbank': (context) => BloodBanksScreen(),
+              '/campaigndetails': (context) => HospitalDetailsScreen(),
+              '/chatbot': (context) => ChatbotScreen(),
+              
+              
             },
             title: 'Blood Donation App',
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: ThemeMode.system,
             debugShowCheckedModeBanner: false,
-            home: BloodBanksScreen(),
+            home: SplashScreen(),
           );
         },
       ),

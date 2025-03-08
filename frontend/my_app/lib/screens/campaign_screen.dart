@@ -24,16 +24,16 @@ class _CampaignsScreenContent extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
     final screenHeight = mediaQuery.size.height;
     final screenWidth = mediaQuery.size.width;
-    
+
     final double paddingValue = screenWidth * 0.04; // 4% of screen width
-    
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color:theme.textTheme.bodyLarge?.color ),
+          icon: Icon(Icons.arrow_back, color: theme.textTheme.bodyLarge?.color),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -60,70 +60,77 @@ class _CampaignsScreenContent extends StatelessWidget {
             padding: EdgeInsets.all(paddingValue),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+              children: [
                 // Active campaigns count
                 RichText(
                   text: TextSpan(
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.04,
-                    color: Colors.black54,
-                  ),
-                  children: [
-                    TextSpan(text: 'WE HAVE TOTAL ', style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)), 
-                    TextSpan(
-                    text: '0${provider.activeCampaignsCount} ACTIVE CAMPAIGNS',
                     style: TextStyle(
-                      color: theme.primaryColor,
-                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth * 0.04,
+                      color: Colors.black54,
                     ),
-                    ),
-                  ],
+                    children: [
+                      TextSpan(
+                          text: 'WE HAVE TOTAL ',
+                          style: theme.textTheme.bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.bold)),
+                      TextSpan(
+                        text:
+                            '0${provider.activeCampaignsCount} ACTIVE CAMPAIGNS',
+                        style: TextStyle(
+                          color: theme.primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                
+
                 SizedBox(height: screenHeight * 0.02), // 2% of screen height
-                
+
                 // Campaign list
                 ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: provider.campaigns.length,
                   itemBuilder: (context, index) {
-                  final campaign = provider.campaigns[index];
-                  return _CampaignCard(
-                    campaign: campaign,
-                    theme: theme,
-                    screenHeight: screenHeight,
-                    screenWidth: screenWidth,
-                  );
+                    final campaign = provider.campaigns[index];
+                    return _CampaignCard(
+                      campaign: campaign,
+                      theme: theme,
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
+                    );
                   },
                 ),
                 // Update button
                 Consumer<CampaignsProvider>(
                   builder: (context, provider, child) {
-                  return ElevatedButton(
-                    onPressed:  () async {
-                    try {
-                      await provider.getData();
-                    } catch (e) {
-                      // Handle the exception
-                      print('Failed to load campaigns: $e');
-                    }
+                    return ElevatedButton(
+                      onPressed: () async {
+                        try {
+                          await provider.getData();
+                        } catch (e) {
+                          // Handle the exception
+                          print('Failed to load campaigns: $e');
+                        }
 
-                    // Handle update action
-                    },
-                    style: ElevatedButton.styleFrom(
-                    backgroundColor: provider.isUserJoined ? theme.primaryColor : Colors.grey,
-                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                    textStyle: TextStyle(
-                      fontSize: screenWidth * 0.04,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    ),
-                    child: Center(
-                    child: Text('UPDATE'),
-                    ),
-                  );
+                        // Handle update action
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: provider.isUserJoined
+                            ? theme.primaryColor
+                            : Colors.grey,
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                        textStyle: TextStyle(
+                          fontSize: screenWidth * 0.04,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text('UPDATE'),
+                      ),
+                    );
                   },
                 ),
               ],
@@ -147,12 +154,12 @@ class _CampaignCard extends StatelessWidget {
     required this.screenHeight,
     required this.screenWidth,
   });
-    // final double cardPadding = screenWidth * 0.03; // 3% of screen width
+  // final double cardPadding = screenWidth * 0.03; // 3% of screen width
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<CampaignsProvider>(context);
     final double cardPadding = screenWidth * 0.03; // 3% of screen width
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: screenHeight * 0.015),
       child: Column(
@@ -179,9 +186,9 @@ class _CampaignCard extends StatelessWidget {
               ),
             ],
           ),
-          
+
           SizedBox(height: screenHeight * 0.008),
-          
+
           // Description
           Text(
             campaign.description,
@@ -190,9 +197,9 @@ class _CampaignCard extends StatelessWidget {
               fontSize: screenWidth * 0.035,
             ),
           ),
-          
+
           SizedBox(height: screenHeight * 0.015),
-          
+
           // Actions
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -209,12 +216,16 @@ class _CampaignCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: campaign.isUserJoined ? theme.primaryColor : Colors.grey,
+                          color: campaign.isUserJoined
+                              ? theme.primaryColor
+                              : Colors.grey,
                           width: 1.5,
                         ),
-                        color: campaign.isUserJoined ? theme.primaryColor : Colors.transparent,
+                        color: campaign.isUserJoined
+                            ? theme.primaryColor
+                            : Colors.transparent,
                       ),
-                      child: campaign.isUserJoined 
+                      child: campaign.isUserJoined
                           ? Icon(
                               Icons.check,
                               size: screenWidth * 0.035,
@@ -233,10 +244,13 @@ class _CampaignCard extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // DETAILS button
               InkWell(
-                onTap: () => provider.viewCampaignDetails(campaign.id),
+                onTap: () {
+                  provider.viewCampaignDetails(campaign.id);
+                  Navigator.of(context).pushNamed('/campaigndetails');
+                },
                 child: Row(
                   children: [
                     Icon(
@@ -257,9 +271,9 @@ class _CampaignCard extends StatelessWidget {
               ),
             ],
           ),
-          
+
           SizedBox(height: screenHeight * 0.015),
-          
+
           // Divider
           Divider(color: Colors.grey[300], height: 1),
         ],

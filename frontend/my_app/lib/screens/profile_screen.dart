@@ -66,11 +66,11 @@ class ProfileScreenContent extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: screenWidth * 0.1,
-                  child: Text('SJ', style: TextStyle(color: theme.primaryColor, fontSize: 24)),
+                  child: Text('HM', style: TextStyle(color: theme.primaryColor, fontSize: 24)),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Sarah Johnson',
+                  'Himanshu Mishra',
                   style: theme.textTheme.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
@@ -83,7 +83,7 @@ class ProfileScreenContent extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text('A+', style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold)),
+                      child: Text('B+', style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.bold)),
                     ),
                     const SizedBox(width: 8),
                     Text('5 donations', style: const TextStyle(color: Colors.white)),
@@ -224,7 +224,7 @@ class RequestsListView extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                '${requests.length} pending',
+                '2 pending',
                 style: const TextStyle(color: Colors.grey),
               ),
             ],

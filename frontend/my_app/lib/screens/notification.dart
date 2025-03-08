@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/provider/notification_provider.dart' as myApp;
 import 'package:provider/provider.dart';
+import 'package:my_app/provider/notification_provider.dart' as myApp;
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({Key? key}) : super(key: key);
@@ -10,30 +10,21 @@ class NotificationsScreen extends StatelessWidget {
     final notificationsProvider = Provider.of<myApp.NotificationsProvider>(context);
     final notifications = notificationsProvider.notifications;
     final newNotificationsCount = notificationsProvider.newNotificationsCount;
-    
-    // Using theme colors as specified
-    final primaryColor = Theme.of(context).primaryColor;
-    final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
-    final textTheme = Theme.of(context).textTheme;
-    
-    // Using MediaQuery for responsiveness
+
+    final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    
+
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: scaffoldBackgroundColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).iconTheme.color),
+          icon: Icon(Icons.arrow_back_ios, color: theme.iconTheme.color),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(
-          'NOTIFICATIONS',
-          style: textTheme.bodyLarge
-        ),
-        
+        title: Text('NOTIFICATIONS', style: theme.textTheme.bodyLarge),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,15 +36,9 @@ class NotificationsScreen extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Text(
-                  '0${newNotificationsCount}',
-                  style: textTheme.bodyLarge
-                ),
+                Text('0$newNotificationsCount', style: theme.textTheme.bodyLarge),
                 SizedBox(width: 5),
-                Text(
-                  'NEW NOTIFICATIONS',
-                  style: textTheme.bodyLarge
-                ),
+                Text('NEW NOTIFICATIONS', style: theme.textTheme.bodyLarge),
               ],
             ),
           ),
@@ -62,11 +47,26 @@ class NotificationsScreen extends StatelessWidget {
               itemCount: notifications.length,
               itemBuilder: (context, index) {
                 final notification = notifications[index];
-                return NotificationTile(
+                return NotificationCard(
                   notification: notification,
-                  primaryColor: primaryColor,
-                  screenWidth: screenWidth,
-                  screenHeight: screenHeight,
+                  onAccept: () {
+                    notificationsProvider.removeNotification(index);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text('Request accepted'),
+                      ),
+                    );
+                  },
+                  onDecline: () {
+                    notificationsProvider.removeNotification(index);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text('Request declined'),
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -77,32 +77,102 @@ class NotificationsScreen extends StatelessWidget {
   }
 }
 
+class NotificationCard extends StatefulWidget {
+  final myApp.Notification notification;
+  final VoidCallback onAccept;
+  final VoidCallback onDecline;
+
+  const NotificationCard({
+    Key? key,
+    required this.notification,
+    required this.onAccept,
+    required this.onDecline,
+  }) : super(key: key);
+
+  @override
+  _NotificationCardState createState() => _NotificationCardState();
+}
+
+class _NotificationCardState extends State<NotificationCard> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: screenWidth * 0.03,
+        vertical: screenHeight * 0.01,
+      ),
+      child: Material(
+        elevation: 2,
+        borderRadius: BorderRadius.circular(10),
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () {
+                setState(() {
+                  isExpanded = !isExpanded;
+                });
+              },
+              child: NotificationTile(
+                notification: widget.notification,
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+              ),
+            ),
+            if (isExpanded)
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.03,
+                  vertical: screenHeight * 0.01,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: widget.onAccept,
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      child: Text('Accept'),
+                    ),
+                    ElevatedButton(
+                      onPressed: widget.onDecline,
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      child: Text('Decline'),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class NotificationTile extends StatelessWidget {
   final myApp.Notification notification;
-  final Color primaryColor;
   final double screenWidth;
   final double screenHeight;
 
   const NotificationTile({
     Key? key,
     required this.notification,
-    required this.primaryColor,
     required this.screenWidth,
     required this.screenHeight,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
 
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: screenWidth * 0.04,
         vertical: screenHeight * 0.01,
-      ),
-      margin: EdgeInsets.symmetric(
-        horizontal: screenWidth * 0.02,
-        vertical: screenHeight * 0.005,
       ),
       decoration: BoxDecoration(
         border: Border(
@@ -119,15 +189,12 @@ class NotificationTile extends StatelessWidget {
             width: screenWidth * 0.1,
             height: screenWidth * 0.1,
             decoration: BoxDecoration(
-              color: primaryColor,
+              color: theme.primaryColor,
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
             child: notification.isNew
-                ? Text(
-                    'N',
-                    style: textTheme.bodyLarge
-                  )
+                ? Text('N', style: theme.textTheme.bodyLarge)
                 : Icon(
                     Icons.check,
                     color: Colors.white,
@@ -138,7 +205,7 @@ class NotificationTile extends StatelessWidget {
           Expanded(
             child: Text(
               notification.message,
-              style: textTheme.bodyLarge
+              style: theme.textTheme.bodyLarge,
             ),
           ),
         ],

@@ -278,7 +278,7 @@ class _EmergencyHelpScreenState extends State<EmergencyHelpScreen> {
             IconButton(
               icon: const Icon(Icons.call, color: Colors.green),
               onPressed: () {
-                onCallPressed();
+                
                 _launchDialer(number);
               },
               tooltip: 'Call $title',
@@ -290,14 +290,15 @@ class _EmergencyHelpScreenState extends State<EmergencyHelpScreen> {
   }
 
   void _launchDialer(String number) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: number,
-    );
-    if (await canLaunch(launchUri.toString())) {
-      await launch(launchUri.toString());
-    } else {
-      throw 'Could not launch $launchUri';
-    }
+  final Uri launchUri = Uri(
+    scheme: 'tel',
+    path: number,
+  );
+
+  if (await canLaunchUrl(launchUri)) {
+    await launchUrl(launchUri);
+  } else {
+    throw 'Could not launch $launchUri';
   }
+}
 }

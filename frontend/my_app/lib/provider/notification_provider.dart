@@ -44,32 +44,32 @@ class NotificationsProvider extends ChangeNotifier {
     ),
     Notification(
       bloodType: "B+",
-      isNew: false,
+      isNew: true,
       message: "BLOOD TYPE B+ REQUIRED NEAR BY YOUR LOCATION",
     ),
     Notification(
       bloodType: "AB+",
-      isNew: false,
+      isNew: true,
       message: "BLOOD TYPE AB+ REQUIRED NEAR BY YOUR LOCATION",
     ),
     Notification(
       bloodType: "O-",
-      isNew: false,
+      isNew: true,
       message: "BLOOD TYPE O- REQUIRED NEAR BY YOUR LOCATION",
     ),
     Notification(
       bloodType: "O-",
-      isNew: false,
+      isNew: true,
       message: "BLOOD TYPE O- REQUIRED NEAR BY YOUR LOCATION",
     ),
     Notification(
       bloodType: "O-",
-      isNew: false,
+      isNew: true,
       message: "BLOOD TYPE O- REQUIRED NEAR BY YOUR LOCATION",
     ),
     Notification(
       bloodType: "O-",
-      isNew: false,
+      isNew: true,
       message: "BLOOD TYPE O- REQUIRED NEAR BY YOUR LOCATION",
     ),
   ];
@@ -89,5 +89,9 @@ class NotificationsProvider extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+  void removeNotification(int index) {
+    _notifications.removeAt(index);
+    notifyListeners(); // Notify UI to rebuild
   }
 }

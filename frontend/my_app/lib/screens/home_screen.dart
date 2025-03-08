@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/provider/blood_donation_provider.dart';
+import 'package:my_app/provider/find_donor_step_dialog.dart';
 import 'package:my_app/provider/home_screen_provider.dart';
+import 'package:my_app/screens/finddonor_popup.dart';
 import 'package:my_app/theme/theme.dart';
 import 'package:provider/provider.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -37,6 +38,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/chatbot');
+          
+        },
+        child: Icon(Icons.message),
+        backgroundColor: Colors.red,
+      ),
       body: SafeArea(
         child: provider.isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -176,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
-            child: Text('Emergency SOS', style: theme.textTheme.titleLarge),
+            child: Text('Emergency SOS', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
           ),
         ),
       ),
@@ -349,9 +358,8 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             icon: Icons.person_search_outlined,
             label: 'FIND DONOR',
-            onTap: ()  {
-              Navigator.pushNamed(context, '/donorlist');
-              
+            onTap: () {
+              startDonorFlow(context);
             },
             width: size.width * 0.28,
           ),
@@ -628,4 +636,530 @@ class BloodBagPainter extends CustomPainter {
   }
 }
 
-  
+// Main application entry point
+void startDonorFlow(BuildContext context) {
+  final provider = Provider.of<DonorDataProvider>(context, listen: false);
+  provider.resetData();
+  _showCurrentStepDialog(context);
+}
+
+void _showCurrentStepDialog(BuildContext context) {
+  final provider = Provider.of<DonorDataProvider>(context, listen: false);
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (dialogContext) => _buildDialogForStep(dialogContext, provider),
+  ).then((_) {
+    // Check if we need to show the next dialog
+    if (provider.currentStep != DonorFlowStep.bloodType &&
+        provider.currentStep != DonorFlowStep.complete) {
+      _showCurrentStepDialog(context);
+    } else if (provider.currentStep == DonorFlowStep.complete) {
+      // Show completion dialog once
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) =>
+            _buildDialogForStep(dialogContext, provider),
+      );
+    }
+  });
+}
+
+Widget _buildDialogForStep(
+    BuildContext dialogContext, DonorDataProvider provider) {
+  switch (provider.currentStep) {
+    case DonorFlowStep.bloodType:
+      return const BloodTypeDialog();
+    case DonorFlowStep.address:
+      return const AddressDialog();
+    case DonorFlowStep.requirement:
+      return const RequirementDialog();
+    case DonorFlowStep.urgency:
+      return const UrgencyDialog();
+    
+    default:
+      return const BloodTypeDialog();
+  }
+}
+
+// Base Dialog class that all step dialogs extend from
+class StepDialog extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const StepDialog({
+    Key? key,
+    required this.title,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Container(
+        width: mediaQuery.size.width * 0.9,
+        constraints: BoxConstraints(
+          maxWidth: 500,
+          maxHeight: mediaQuery.size.height * 0.8,
+        ),
+        padding: EdgeInsets.all(mediaQuery.size.width * 0.05),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+            ),
+            const Divider(),
+            Flexible(
+              child: SingleChildScrollView(
+                child: child,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BloodTypeDialog extends StatelessWidget {
+  const BloodTypeDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<DonorDataProvider>(context);
+    final mediaQuery = MediaQuery.of(context);
+    final theme = Theme.of(context);
+
+    final bloodTypes = [
+      'A+',
+      'A-',
+      'B+',
+      'B-',
+      'AB+',
+      'AB-',
+      'O+',
+      'O-',
+    ];
+
+    return StepDialog(
+      title: 'BLOOD TYPE',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              childAspectRatio: 1.5,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: bloodTypes.length,
+            itemBuilder: (context, index) {
+              final bloodType = bloodTypes[index];
+              final isSelected = provider.selectedBloodType == bloodType;
+
+              return GestureDetector(
+                onTap: () => provider.selectBloodType(bloodType),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isSelected ? theme.primaryColor : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: theme.primaryColor.withOpacity(0.5),
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      bloodType,
+                      style: TextStyle(
+                        color: isSelected
+                            ? Colors.white
+                            : theme.textTheme.bodyMedium?.color,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          SizedBox(height: mediaQuery.size.height * 0.04),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: provider.selectedBloodType != null
+                  ? () {
+                      provider.goToNextStep();
+                      Navigator.of(context).pop();
+                    }
+                  : null,
+              child: const Text('NEXT'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AddressDialog extends StatelessWidget {
+  const AddressDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<DonorDataProvider>(context);
+    final mediaQuery = MediaQuery.of(context);
+
+    return StepDialog(
+      title: 'LOCATION',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: mediaQuery.size.height * 0.02),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TextField(
+                    onChanged: provider.updateLocation,
+                    decoration: const InputDecoration(
+                      hintText: 'LOCATION',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: mediaQuery.size.width * 0.02),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TextField(
+                    onChanged: provider.updateState,
+                    decoration: const InputDecoration(
+                      hintText: 'STATE',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: mediaQuery.size.height * 0.02),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: TextField(
+              onChanged: provider.updateAddress,
+              decoration: InputDecoration(
+                hintText: 'ADDRESS',
+                hintStyle: const TextStyle(color: Colors.grey),
+                suffixIcon: Icon(
+                  Icons.location_on,
+                  color: Theme.of(context).primaryColor,
+                ),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          SizedBox(height: mediaQuery.size.height * 0.02),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: TextField(
+              onChanged: provider.updateHospitalName,
+              decoration: InputDecoration(
+                hintText: 'HOSPITAL NAME',
+                hintStyle: const TextStyle(color: Colors.grey),
+                suffixIcon: Icon(
+                  Icons.location_on,
+                  color: Theme.of(context).primaryColor,
+                ),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          SizedBox(height: mediaQuery.size.height * 0.04),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    provider.goToPreviousStep();
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('PREVIOUS'),
+                ),
+              ),
+              SizedBox(width: mediaQuery.size.width * 0.02),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: provider.address.isNotEmpty &&
+                          provider.hospitalName.isNotEmpty
+                      ? () {
+                          provider.goToNextStep();
+                          Navigator.of(context).pop();
+                        }
+                      : null,
+                  child: const Text('NEXT'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class RequirementDialog extends StatelessWidget {
+  const RequirementDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<DonorDataProvider>(context);
+    final mediaQuery = MediaQuery.of(context);
+
+    return StepDialog(
+      title: 'REQUIREMENT',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: mediaQuery.size.height * 0.02),
+          GestureDetector(
+            onTap: () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime.now(),
+                lastDate: DateTime.now().add(const Duration(days: 365)),
+              );
+              if (date != null) {
+                provider.updateRequirementDate(date);
+              }
+            },
+            child: TextField(
+              enabled: false,
+              controller: TextEditingController(
+                text: provider.requirementDate != null
+                    ? '${provider.requirementDate!.day}/${provider.requirementDate!.month}/${provider.requirementDate!.year}'
+                    : '',
+              ),
+              decoration: InputDecoration(
+                hintText: 'DATE',
+                hintStyle: const TextStyle(color: Colors.grey),
+                suffixIcon: Icon(
+                  Icons.calendar_today,
+                  color: Theme.of(context).primaryColor,
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: mediaQuery.size.height * 0.02),
+          DropdownButtonFormField<String>(
+            decoration: const InputDecoration(
+              hintText: 'BLOOD USED FOR',
+              hintStyle: TextStyle(color: Colors.grey),
+            ),
+            items: const [
+              DropdownMenuItem(value: 'Surgery', child: Text('Surgery')),
+              DropdownMenuItem(value: 'Accident', child: Text('Accident')),
+              DropdownMenuItem(
+                  value: 'Cancer Treatment', child: Text('Cancer Treatment')),
+              DropdownMenuItem(value: 'Anemia', child: Text('Anemia')),
+              DropdownMenuItem(value: 'Childbirth', child: Text('Childbirth')),
+              DropdownMenuItem(value: 'Other', child: Text('Other')),
+            ],
+            onChanged: (value) {
+              if (value != null) {
+                provider.updateBloodUsedFor(value);
+              }
+            },
+          ),
+          SizedBox(height: mediaQuery.size.height * 0.02),
+          Row(
+            children: [
+              Checkbox(
+                value: provider.agreedToTerms,
+                onChanged: (value) {
+                  if (value != null) {
+                    provider.toggleTermsAgreement(value);
+                  }
+                },
+              ),
+              const Text('I AGREE ALL '),
+              TextButton(
+                onPressed: () {
+                  // Show terms and conditions
+                },
+                child: const Text('TERMS & CONDITIONS'),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size.zero,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: mediaQuery.size.height * 0.04),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    provider.goToPreviousStep();
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('PREVIOUS'),
+                ),
+              ),
+              SizedBox(width: mediaQuery.size.width * 0.02),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: provider.requirementDate != null &&
+                          provider.bloodUsedFor.isNotEmpty &&
+                          provider.agreedToTerms
+                      ? () {
+                          provider.goToNextStep();
+                          Navigator.of(context).pop();
+                        }
+                      : null,
+                  child: const Text('NEXT'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class UrgencyDialog extends StatelessWidget {
+  const UrgencyDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<DonorDataProvider>(context);
+    final mediaQuery = MediaQuery.of(context);
+
+    return StepDialog(
+      title: 'URGENCY',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: mediaQuery.size.height * 0.02),
+          DropdownButtonFormField<String>(
+            decoration: const InputDecoration(
+              hintText: 'TYPE',
+              hintStyle: TextStyle(color: Colors.grey),
+            ),
+            items: const [
+              DropdownMenuItem(value: 'Urgent', child: Text('Urgent')),
+              DropdownMenuItem(value: 'Moderate', child: Text('Moderate')),
+              DropdownMenuItem(value: 'Low', child: Text('Low')),
+            ],
+            onChanged: (value) {
+              if (value != null) {
+                provider.updateUrgencyLevel(value);
+              }
+            },
+          ),
+          SizedBox(height: mediaQuery.size.height * 0.02),
+          Row(
+            children: [
+              Checkbox(
+                value: provider.agreedToTerms,
+                onChanged: (value) {
+                  if (value != null) {
+                    provider.toggleTermsAgreement(value);
+                  }
+                },
+              ),
+              const Text('I AGREE ALL '),
+              TextButton(
+                onPressed: () {
+                  // Show terms and conditions
+                },
+                child: const Text('TERMS & CONDITIONS'),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size.zero,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: mediaQuery.size.height * 0.04),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    provider.goToPreviousStep();
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('PREVIOUS'),
+                ),
+              ),
+              SizedBox(width: mediaQuery.size.width * 0.02),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed:
+                      provider.urgencyLevel.isNotEmpty && provider.agreedToTerms
+                          ? () async {
+                              final success = await provider.submitDonorData();
+                              if (success) {
+                                provider.goToNextStep();
+                                Navigator.pushNamed(context, '/donorlist');
+                              }
+                            }
+                          : null,
+                  child: const Text('SUBMIT'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
