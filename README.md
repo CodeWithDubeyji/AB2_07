@@ -80,7 +80,7 @@ npm run dev
     <p>Users is notified about the blood requests from nearby users</p>
   </div>
   <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/UserProfile.jpg" style="width:100%;" />
+    <img src="./frontend/my_app/assests/images/UserProfile.png" style="width:100%;" />
     <p>Profile of a logged in user</p>
   </div>
 </div>
