@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/provider/donate_provider.dart';
 import 'package:my_app/provider/home_screen_provider.dart';
+import 'package:my_app/provider/nav_bar_provider.dart';
 import 'package:provider/provider.dart';
 
 class DonateScreen extends StatelessWidget {
@@ -22,7 +23,7 @@ class _DonateScreenContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final provider = Provider.of<DonateProvider>(context);
-    final homeProvider = Provider.of<HomeProvider>(context);
+    final bottomNavProvider = Provider.of<BottomNavProvider>(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -35,10 +36,7 @@ class _DonateScreenContent extends StatelessWidget {
         leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              homeProvider.setSelectedTabIndex(0);
-              
-              Navigator.of(context).pop();
-
+              bottomNavProvider.setSelectedIndex(0);
             }),
       ),
       body: SafeArea(
@@ -167,11 +165,11 @@ class _DonateScreenContent extends StatelessWidget {
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    'Downtown Center',
-                                    'North Branch',
-                                    'South Hub',
-                                    'East Station',
-                                    'West Facility',
+                                    'Andheri',
+                                    'Bandra',
+                                    'Bhandup',
+                                    'Borivali',
+                                    'Vasai',
                                   ]
                                       .map((location) => ListTile(
                                             title: Text(location),
@@ -221,6 +219,7 @@ class _DonateScreenContent extends StatelessWidget {
                                   content:
                                       Text('Donation scheduled successfully!')),
                             );
+                            Navigator.pop(context);
                             // Navigate back or to confirmation screen
                             // Navigator.of(context).pop();
                           }
@@ -309,13 +308,16 @@ class _DonateScreenContent extends StatelessWidget {
           isExpanded: true,
           hint: Text(
             'List of available campaigns on this date',
-            style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+            style: TextStyle(color: Colors.black, fontSize: 16),
           ),
           value: provider.selectedCampaign,
           items: provider.availableCampaigns.map((String campaign) {
             return DropdownMenuItem<String>(
               value: campaign,
-              child: Text(campaign),
+              child: Text(
+                campaign,
+                style: TextStyle(color: Colors.black),
+              ),
             );
           }).toList(),
           onChanged: provider.selectedTime != null

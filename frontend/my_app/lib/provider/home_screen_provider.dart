@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class HomeProvider extends ChangeNotifier {
   // User info
-  final String userName = "DHRUV CHAUHAN";
+  final String userName = "HIMANSHU MISHRA";
   final String bloodGroup = "B-";
   
   // Profile info - added new section for profile data
-  final String userProfileName = "FELIX GORDON"; // Used in profile screen
-  final String userProfilePhoto = ""; // Would contain URL in real app
+  //final String userProfileName = "FELIX GORDON"; // Used in profile screen
+  //final String userProfilePhoto = ""; // Would contain URL in real app
   
   // Data for carousel cards
   final List<Map<String, dynamic>> carouselItems = [

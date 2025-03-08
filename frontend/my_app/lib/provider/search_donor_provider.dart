@@ -1,5 +1,3 @@
-// provider/blood_donation_provider.dart
-
 import 'package:flutter/material.dart';
 
 // Model class to store our form data
@@ -40,7 +38,9 @@ class BloodDonationFormData {
 
 // Provider to manage form data and UI state
 class BloodDonationProvider with ChangeNotifier {
-  final BloodDonationFormData formData = BloodDonationFormData();
+  final BloodDonationFormData _formData = BloodDonationFormData();
+
+  BloodDonationFormData get formData => _formData;
   
   // Blood type sheet
   void setBloodType(String type) {
@@ -112,36 +112,11 @@ class BloodDonationProvider with ChangeNotifier {
       // );
       
       // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 2));
       return true;
     } catch (e) {
-      // ignore: avoid_print
       print('Error submitting form: $e');
       return false;
     }
-  }
-  
-  // For debugging - you can call this to check state
-  void printCurrentState() {
-    // ignore: avoid_print
-    print('Current Form State:');
-    // ignore: avoid_print
-    print('Blood Type: ${formData.bloodType}');
-    // ignore: avoid_print
-    print('Location: ${formData.location}');
-    // ignore: avoid_print
-    print('State: ${formData.state}');
-    // ignore: avoid_print
-    print('Address: ${formData.address}');
-    // ignore: avoid_print
-    print('Hospital: ${formData.hospitalName}');
-    // ignore: avoid_print
-    print('Date: ${formData.date}');
-    // ignore: avoid_print
-    print('Blood Use: ${formData.bloodUseFor}');
-    // ignore: avoid_print
-    print('Agree to Terms: ${formData.agreeToTerms}');
-    // ignore: avoid_print
-    print('Urgency: ${formData.urgency}');
   }
 }
