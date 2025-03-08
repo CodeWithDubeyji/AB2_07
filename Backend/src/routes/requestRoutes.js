@@ -1,75 +1,103 @@
-const express = require("express");
-const BloodRequest = require("../models/BloodRequest");
-const router = express.Router();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const authenticate = require('../middelware/AuthMiddleware');
-const axios = require('axios');
-const Notification = require("../models/NotificationModel");
-const User = require("../models/UserModel");
+const express = require('express')
+const BloodRequest = require('../models/BloodRequest')
+const router = express.Router()
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const authenticate = require('../middelware/AuthMiddleware')
+const axios = require('axios')
+const Notification = require('../models/NotificationModel')
+const User = require('../models/UserModel')
 
-router.post("/request", authenticate, async (req, res) => {
+router.post('/request', authenticate, async (req, res) => {
   try {
     // `req.user` should contain the authenticated user's details from the `authenticate` middleware
-    const requesterId = req.user._id; 
+    const requesterId = req.user._id
 
     // Create new blood request
     const request = new BloodRequest({
-      ...req.body, 
+      ...req.body,
       requesterId
-    });
+    })
 
-    await request.save();
-    
-    const lat = parseFloat(req.body.hospital.location.coordinates[1]);
-        const lon = parseFloat(req.body.hospital.location.coordinates[0]);
-       const bloodType = req.body.bloodType;
-        function getDistance(lat1, lon1, lat2, lon2) {
-          const R = 6371; // Earth’s radius in km
-          const dLat = (lat2 - lat1) * (Math.PI / 180);
-          const dLon = (lon2 - lon1) * (Math.PI / 180);
-          const a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          return R * c; // Distance in km
-        }
-    
-        const donors = await User.find({  bloodType , availability: "Available" });
-    
-        const filteredDonors = donors
-          .filter(donor => donor.location && donor.location.coordinates)
-          .map(donor => ({
-            ...donor._doc,
-            distance: getDistance(lat, lon, donor.location.coordinates[1], donor.location.coordinates[0])
-          }))
-          .filter(donor => donor.distance <= 5) // 5km range
-          .sort((a, b) => a.distance - b.distance);
+    await request.save()
 
+    const lat = parseFloat(req.body.hospital.location.coordinates[1])
+    const lon = parseFloat(req.body.hospital.location.coordinates[0])
+    const bloodType = req.body.bloodType
 
-    const notifications = filteredDonors.map((user) => ({
-      userId: user._id,
-      requestId: request._id,
-      message: `Urgent! Blood type ${req.body.bloodType} needed at ${req.body.hospital.name}.`,
-      createdAt: new Date()
-    }));
+    function getDistance (lat1, lon1, lat2, lon2) {
+      const R = 6371 // Earth’s radius in km
+      const dLat = (lat2 - lat1) * (Math.PI / 180)
+      const dLon = (lon2 - lon1) * (Math.PI / 180)
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * (Math.PI / 180)) *
+          Math.cos(lat2 * (Math.PI / 180)) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2)
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+      return R * c // Distance in km
+    }
 
-    await Notification.insertMany(notifications);
-    res.status(201).json({ request, message: "Blood request posted and notifications sent!" });
+    const donors = await User.find({ bloodType, availability: 'Available' })
+
+    const filteredDonors = donors
+      .filter(donor => donor.location && donor.location.coordinates)
+      .map(donor => ({
+        ...donor._doc,
+        distance: getDistance(
+          lat,
+          lon,
+          donor.location.coordinates[1],
+          donor.location.coordinates[0]
+        )
+      }))
+      .filter(donor => donor.distance <= 5) // 5km range
+      .sort((a, b) => a.distance - b.distance)
+
+    // Assign urgency levels based on distance
+    const notifications = filteredDonors.map(user => {
+      let urgency = 'Low'
+      if (user.distance <= 2) {
+        urgency = 'High'
+      } else if (user.distance <= 5) {
+        urgency = 'Medium'
+      }
+
+      return {
+        userId: user._id,
+        requestId: request._id,
+        message: `Urgent! Blood type ${req.body.bloodType} needed at ${req.body.hospital.name}.`,
+        urgency, // Add urgency level
+        createdAt: new Date()
+      }
+    })
+
+    // Sort notifications by urgency (High > Medium > Low)
+    const sortedNotifications = notifications.sort((a, b) => {
+      const urgencyOrder = { High: 1, Medium: 2, Low: 3 }
+      return urgencyOrder[a.urgency] - urgencyOrder[b.urgency]
+    })
+
+    await Notification.insertMany(sortedNotifications)
+    res
+      .status(201)
+      .json({
+        request,
+        message: 'Blood request posted and notifications sent!'
+      })
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message })
   }
-});
+})
 
-
-router.get("/active-requests",authenticate, async (req, res) => {
+router.get('/active-requests', authenticate, async (req, res) => {
   try {
-    const requests = await BloodRequest.find({ status: "Pending" });
-    res.json(requests);
+    const requests = await BloodRequest.find({ status: 'Pending' })
+    res.json(requests)
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message })
   }
-});
+})
 
-module.exports = router;
+module.exports = router
