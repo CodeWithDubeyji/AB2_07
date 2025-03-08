@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema({
   bloodType: { type: String },
   donated : {type : Number , defaut:0},
   request: {type : Number , default:0},
-  bloodType : {type : String , required:true},
+  
   password : {
     type:String,
     required:true
