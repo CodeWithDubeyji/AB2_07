@@ -16,7 +16,7 @@ router.post("/request", authenticate, async (req, res) => {
     // Create new blood request
     const request = new BloodRequest({
       ...req.body, 
-      requesterId // Set the requester ID automatically
+      requesterId
     });
 
     await request.save();
@@ -65,7 +65,7 @@ router.post("/request", authenticate, async (req, res) => {
 
 router.get("/active-requests",authenticate, async (req, res) => {
   try {
-    const requests = await BloodRequest.find({ status: "Pending" }).populate("requesterId");
+    const requests = await BloodRequest.find({ status: "Pending" });
     res.json(requests);
   } catch (err) {
     res.status(500).json({ error: err.message });
