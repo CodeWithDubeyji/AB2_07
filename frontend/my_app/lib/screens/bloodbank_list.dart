@@ -15,9 +15,9 @@ class _BloodBanksScreenState extends State<BloodBanksScreen> {
   void initState() {
     super.initState();
     // Fetch data when screen loads
-    Future.microtask(() => 
-      Provider.of<BloodBankProvider>(context, listen: false).fetchBloodBanks()
-    );
+    Future.microtask(() =>
+        Provider.of<BloodBankProvider>(context, listen: false)
+            .fetchBloodBanks());
   }
 
   @override
@@ -25,10 +25,14 @@ class _BloodBanksScreenState extends State<BloodBanksScreen> {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final provider = Provider.of<BloodBankProvider>(context);
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blood Banks Near You'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Blood Banks Near You', style: theme.textTheme.titleMedium,),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -55,7 +59,7 @@ class _BloodBanksScreenState extends State<BloodBanksScreen> {
                 ],
               ),
             ),
-            
+
             // Blood banks list
             Expanded(
               child: ListView.builder(
@@ -75,7 +79,7 @@ class _BloodBanksScreenState extends State<BloodBanksScreen> {
                 },
               ),
             ),
-            
+
             // Emergency contact button
             Container(
               width: double.infinity,
@@ -113,6 +117,7 @@ class _BloodBanksScreenState extends State<BloodBanksScreen> {
                     flex: 3,
                     child: ElevatedButton(
                       onPressed: () {
+                        Navigator.pushNamed(context, '/sos');
                         // Emergency contact action
                       },
                       style: ElevatedButton.styleFrom(

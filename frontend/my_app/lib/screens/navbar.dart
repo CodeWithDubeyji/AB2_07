@@ -35,6 +35,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/chatbot');
+          
+        },
+        child: Icon(Icons.message),
+        backgroundColor: Colors.red,
+      ),
       body: _screens[bottomNavProvider.selectedIndex],
       bottomNavigationBar: Container(
         height: size.height * 0.08, // 8% of screen height

@@ -233,7 +233,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   _buildSocialButton(
                     icon: Icons.apple,
-                    color: Colors.white,
+                    color: Colors.black,
                     onPressed: () => provider.loginWithSocialMedia(AuthMethod.apple),
                     screenWidth: screenWidth,
                   ),

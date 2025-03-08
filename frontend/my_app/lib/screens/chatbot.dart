@@ -18,7 +18,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   bool _showDisclaimer = true;
   List<Map<String, dynamic>> _messages = [];
 
-  final String apiUrl = "http://10:0:2:2:5000/upload";
+  final String apiUrl = "https://ab2-07-1.onrender.com/api/upload/upload";
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -85,8 +85,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("RaktVeer"),
-        backgroundColor: Colors.red,
+        title: Text("RaktVeer", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 24)),
+        backgroundColor: Colors.white,
       ),
       body: Column(
         children: [
