@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
   location: { type: { type: String, enum: ["Point"], default: "Point" }, coordinates: [Number] },
   availability: { type: String, enum: ["Available", "Unavailable"], default: "Available" },
   createdAt: { type: Date, default: Date.now },
+  bloodType: { type: String, enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] },
   donated : {type : Number , defaut:0},
   request: {type : Number , default:0},
   password : {
