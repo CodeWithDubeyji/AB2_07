@@ -10,12 +10,11 @@ const UserSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   donated : {type : Number , defaut:0},
   request: {type : Number , default:0},
+  bloodType : {type : String , required:true},
   password : {
     type:String,
     required:true
-    
 }
-  
 });
 
 UserSchema.index({ location: "2dsphere" });

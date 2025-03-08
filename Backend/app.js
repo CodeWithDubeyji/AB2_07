@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const userRoutes = require('./src/routes/userRoutes');
 const requestRoutes = require('./src/routes/requestRoutes');
+const uploadRoutes = require('./src/routes/uploadRoutes'); // Import upload routes
 
 dotenv.config();
 
@@ -19,9 +20,10 @@ app.use('/api/campaigns', require('./src/routes/campaignRoutes'));
 app.use('/api/users', userRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/live-donor-tracking', liveDonorTrackingRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.get('/', (req, res) => {
-    res.send('Blood Request System API Running...');
+  res.send('Blood Request System API Running...');
 });
 
-module.exports = app; // Export the Express app
+module.exports = app;
