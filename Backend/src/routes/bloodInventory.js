@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const BloodBank = require('../models/BloodBank')
+const User = require('../models/UserModel')
 
 router.post('/addBloodBank', async (req, res) => {
   try {
@@ -24,6 +25,7 @@ router.post('/addBloodBank', async (req, res) => {
 })
 
 const BloodInventory = require('../models/BloodInventory')
+const authenticate = require('../middelware/AuthMiddleware')
 
 router.post('/addBloodStock', async (req, res) => {
   try {
@@ -68,49 +70,59 @@ router.get('/availableStock/:bloodType', async (req, res) => {
 })
 
 const getDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-};
+  const R = 6371
+  const dLat = (lat2 - lat1) * (Math.PI / 180)
+  const dLon = (lon2 - lon1) * (Math.PI / 180)
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return R * c
+}
 
-router.get('/nearestBloodBanks', async (req, res) => {
+router.get('/nearestBloodBanks', authenticate, async (req, res) => {
   try {
-    const { bloodType, longitude, latitude } = req.query;
+    const user = await User.findById(req.user._id)
+    const longitude = user.location.coordinates[0]
+    const latitude = user.location.coordinates[1]
+    const bloodType = user.bloodType
 
     if (!bloodType || !longitude || !latitude) {
-      return res.status(400).json({ error: 'bloodType, longitude, and latitude are required' });
+      return res
+        .status(400)
+        .json({ error: 'bloodType, longitude, and latitude are required' })
     }
 
-    const allBanks = await BloodBank.find();
+    const allBanks = await BloodBank.find()
 
     const nearbyBanks = allBanks
       .map(bank => ({
         ...bank._doc,
         distance: getDistance(
-          parseFloat(latitude), 
-          parseFloat(longitude), 
-          bank.location.coordinates[1], 
+          parseFloat(latitude),
+          parseFloat(longitude),
+          bank.location.coordinates[1],
           bank.location.coordinates[0]
         )
       }))
       .filter(bank => bank.distance <= 5)
-      .sort((a, b) => a.distance - b.distance);
+      .sort((a, b) => a.distance - b.distance)
 
     for (const bank of nearbyBanks) {
-      const inventory = await BloodInventory.findOne({ bloodBank: bank._id, bloodType: bloodType });
-      bank.inventory = inventory || null;
+      const inventory = await BloodInventory.findOne({
+        bloodBank: bank._id,
+        bloodType: bloodType
+      })
+      bank.inventory = inventory || null
     }
 
-    res.json(nearbyBanks);
+    res.json(nearbyBanks)
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message })
   }
-});
-
+})
 
 module.exports = router
