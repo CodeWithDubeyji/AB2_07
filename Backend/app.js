@@ -1,30 +1,31 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const http = require('http');
+
 const userRoutes = require('./src/routes/userRoutes');
 const requestRoutes = require('./src/routes/requestRoutes');
-const uploadRoutes = require('./src/routes/uploadRoutes'); // Import upload routes
+const uploadRoutes = require('./src/routes/uploadRoutes');
+const bloodInventoryRoutes = require('./src/routes/bloodInventory');
+const campaignRoutes = require('./src/routes/campaignRoutes');
+const requestHistoryRoutes = require('./src/routes/requestHistoryRoutes');
 
 dotenv.config();
 
 const app = express();
 
+// Middleware
 app.use(express.json());
 app.use(cors());
 
-const bloodInventoryRoutes = require('./src/routes/bloodInventory');
-const liveDonorTrackingRoutes = require('./src/routes/liveDonorTracking');
-
+// Routes
 app.use('/api/bloodInventory', bloodInventoryRoutes);
-app.use('/api/campaigns', require('./src/routes/campaignRoutes'));
+app.use('/api/campaigns', campaignRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/requests', requestRoutes);
-app.use('/api/live-donor-tracking', liveDonorTrackingRoutes);
 app.use('/api/upload', uploadRoutes);
-app.use('/api/request-history', require('./src/routes/requestHistoryRoutes'));
+app.use('/api/request-history', requestHistoryRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Blood Request System API Running...');
+    res.send('Blood Request System API Running...');
 });
-
-module.exports = app;
