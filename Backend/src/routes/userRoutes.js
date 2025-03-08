@@ -90,7 +90,10 @@ router.post('/login' , async (request , response)=>{
 // Get nearby donors
 router.get("/nearby-donors",authenticate, async (req, res) => {
   try {
-    const { longitude, latitude, bloodType } = req.query;
+    const user = await User.findById(req.user._id);
+    const longitude = user.location.coordinates[0];
+    const latitude = user.location.coordinates[1];
+    const bloodType = user.bloodType;
 
     if (!longitude || !latitude || !bloodType) {
       return res.status(400).json({ error: "Missing longitude, latitude, or bloodType" });
