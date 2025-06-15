@@ -46,42 +46,49 @@ npm run dev
   ```
 
 ## Preview of the Provided Solution
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-  <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/Register.jpg" style="width:100%;" />
-    <p>User Registration screen</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/SOS.png" style="width:100%;" />
-    <p>SOS and emergency helpline numbers with first responders number</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/AboutACampaign.png" style="width:100%;" />
-    <p>Home screen</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/BloodBanks.png" style="width:100%;" />
-    <p>List of Hospitals and their blood pool</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/NearbyDonors.png" style="width:100%;" />
-    <p>Get nearby donors and blood banks</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/FindDonor.png" style="width:100%;" />
-    <p>find donor nearby for a specific blood group</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/Notification.png" style="width:100%;" />
-    <p>User get notified based on prioritization algorithm</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/RequestHistory.png" style="width:100%;" />
-    <p>Request history of a user</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="./frontend/my_app/assests/images/UserProfile.png" style="width:100%;" />
-    <p>Profile of a logged in user</p>
-  </div>
-</div>
+<table>
+  <tr>
+    <td align="center">
+      <img src="./frontend/my_app/assests/images/Register.jpg" width="200"/><br/>
+      <sub>User Registration screen</sub>
+    </td>
+    <td align="center">
+      <img src="./frontend/my_app/assests/images/SOS.png" width="200"/><br/>
+      <sub>SOS and emergency helpline</sub>
+    </td>
+    <td align="center">
+      <img src="./frontend/my_app/assests/images/AboutACampaign.png" width="200"/><br/>
+      <sub>Home screen</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./frontend/my_app/assests/images/BloodBanks.png" width="200"/><br/>
+      <sub>List of Hospitals and their blood pool</sub>
+    </td>
+    <td align="center">
+      <img src="./frontend/my_app/assests/images/NearbyDonors.png" width="200"/><br/>
+      <sub>Nearby donors and banks</sub>
+    </td>
+    <td align="center">
+      <img src="./frontend/my_app/assests/images/FindDonor.png" width="200"/><br/>
+      <sub>Find donor by blood group</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./frontend/my_app/assests/images/Notification.png" width="200"/><br/>
+      <sub>Notification system</sub>
+    </td>
+    <td align="center">
+      <img src="./frontend/my_app/assests/images/RequestHistory.png" width="200"/><br/>
+      <sub>Request history</sub>
+    </td>
+    <td align="center">
+      <img src="./frontend/my_app/assests/images/UserProfile.png" width="200"/><br/>
+      <sub>User profile</sub>
+    </td>
+  </tr>
+</table>
+
 
